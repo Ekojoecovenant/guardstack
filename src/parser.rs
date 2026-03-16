@@ -4,8 +4,8 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-pub fn parser_env() -> HashMap<String, Option<String>> {
-    let file = File::open(".env").expect("Cannot open file");
+pub fn parser_env(path: &str) -> HashMap<String, Option<String>> {
+    let file = File::open(path).expect("Cannot open file");
     let reader = BufReader::new(file);
 
     let mut lines_map: HashMap<String, Option<String>> = HashMap::new();
