@@ -1,0 +1,24 @@
+{
+  "name": "devguard",
+  "version": "0.1.0",
+  "description": "A fast .env scanner for Node.js projects",
+  "bin": {
+    "devguard": "./cli.js"
+  },
+  "files": [
+    "cli.js",
+    "bin/"
+  ],
+  "keywords": [
+    "env",
+    "security",
+    "cli",
+    "devtools",
+    "validation"
+  ],
+  "author": "Ekojoe Covenant",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
