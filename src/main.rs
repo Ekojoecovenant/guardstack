@@ -6,7 +6,7 @@ mod validator;
 
 // this struct represents the entire CLI program
 #[derive(Parser)]
-#[command(name = "precheck")]
+#[command(name = "devguard")]
 #[command(about = "A fast .env scanner for Node.js projects")]
 struct Cli {
     #[command(subcommand)]
@@ -37,7 +37,7 @@ fn main() {
 }
 
 fn execute(path: String) {
-    println!("\n🔍 PreCheck - scanning .env...\n");
+    println!("\n🔍 DevGuard - scanning .env...\n");
     let lines_map = parser::parser_env(&path);
     let valid = validator::validate_env(lines_map);
 

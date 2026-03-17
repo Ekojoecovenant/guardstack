@@ -8,10 +8,10 @@ const { spawnSync } = require('child_process');
 const platform = os.platform();
 const binaryName =
   platform === 'win32'
-    ? 'precheck-win.exe'
+    ? 'devguard-win.exe'
     : platform === 'darwin'
-      ? 'precheck-macos'
-      : 'precheck-linux';
+      ? 'devguard-macos'
+      : 'devguard-linux';
 
 const binaryPath = path.join(__dirname, 'bin', binaryName);
 

@@ -1,9 +1,9 @@
 {
-  "name": "precheck",
+  "name": "@deveko/devguard",
   "version": "0.1.0",
   "description": "A fast .env scanner for Node.js projects",
   "bin": {
-    "precheck": "cli.js"
+    "devguard": "cli.js"
   },
   "files": [
     "cli.js",
