@@ -38,15 +38,21 @@ fn main() {
 
 fn execute(path: String) {
     println!("\n🔍 DevGuard - scanning .env...\n");
-    let lines_map = parser::parser_env(&path);
-    let valid = validator::validate_env(lines_map);
+    match parser::parser_env(&path) {
+        Ok(lines_map) => {
+            let valid = validator::validate_env(lines_map);
 
-    for valid_error in &valid {
-        println!("❌ {} -> {}", valid_error.key.red(), valid_error.message)
-    }
-    if valid.is_empty() {
-        println!("✅ All checks passed! Your .env looks good!");
-    } else {
-        println!("\n⚠️  {} issue(s) found", valid.len());
-    }
+            for valid_error in &valid {
+                println!("❌ {} -> {}", valid_error.key.red(), valid_error.message)
+            }
+            if valid.is_empty() {
+                println!("✅ All checks passed! Your .env looks good!");
+            } else {
+                println!("\n⚠️  {} issue(s) found", valid.len());
+            }
+        }
+        Err(e) => {
+            println!("❌ Error: {}", e);
+        }
+    };
 }

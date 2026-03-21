@@ -4,8 +4,8 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-pub fn parser_env(path: &str) -> HashMap<String, Option<String>> {
-    let file = File::open(path).expect("Cannot open file");
+pub fn parser_env(path: &str) -> Result<HashMap<String, Option<String>>, String> {
+    let file = File::open(path).map_err(|_| format!("Could not find ..env file at '{}'", path))?;
     let reader = BufReader::new(file);
 
     let mut lines_map: HashMap<String, Option<String>> = HashMap::new();
@@ -34,5 +34,5 @@ pub fn parser_env(path: &str) -> HashMap<String, Option<String>> {
         lines_map.insert(envs[0].to_string(), Some(envs[1].to_string()));
     }
 
-    lines_map
+    Ok(lines_map)
 }
