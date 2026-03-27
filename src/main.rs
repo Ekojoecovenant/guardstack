@@ -40,18 +40,28 @@ fn execute(path: String) {
     println!("\n🔍 DevGuard - scanning .env...\n");
     match parser::parser_env(&path) {
         Ok((lines_map, warnings)) => {
-            for warning in warnings {
-                println!("{}", warning);
+            for warning in &warnings {
+                println!("{}", warning.yellow());
             }
             let valid = validator::validate_env(lines_map);
 
             for valid_error in &valid {
                 println!("❌ {} -> {}", valid_error.key.red(), valid_error.message)
             }
-            if valid.is_empty() {
+            if valid.is_empty() && warnings.len() == 0 {
                 println!("✅ All checks passed! Your .env looks good!");
             } else {
-                println!("\n⚠️  {} issue(s) found", valid.len());
+                if !valid.is_empty() && !warnings.is_empty() {
+                    println!(
+                        "\n⚠️  {} errors(s) and {} warning(s) found",
+                        valid.len(),
+                        warnings.len()
+                    );
+                } else if !valid.is_empty() {
+                    println!("\n⚠️  {} errors(s) found", valid.len());
+                } else {
+                    println!("\n⚠️  {} warning(s) found", warnings.len());
+                }
             }
         }
         Err(e) => {
