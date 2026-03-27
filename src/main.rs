@@ -53,12 +53,12 @@ fn execute(path: String) {
             } else {
                 if !valid.is_empty() && !warnings.is_empty() {
                     println!(
-                        "\n⚠️  {} errors(s) and {} warning(s) found",
+                        "\n⚠️  {} error(s) and {} warning(s) found",
                         valid.len(),
                         warnings.len()
                     );
                 } else if !valid.is_empty() {
-                    println!("\n⚠️  {} errors(s) found", valid.len());
+                    println!("\n⚠️  {} error(s) found", valid.len());
                 } else {
                     println!("\n⚠️  {} warning(s) found", warnings.len());
                 }

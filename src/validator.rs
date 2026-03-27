@@ -20,11 +20,14 @@ pub trait Rule {
 pub struct SecretRule;
 pub struct PortRule;
 pub struct UrlRule;
+pub struct IdRule;
+pub struct HostRule;
+pub struct NodeRule;
 
 // Impl
 impl Rule for SecretRule {
     fn check(&self, key: &str, value: &str) -> Option<ValidationError> {
-        if !key.contains("SECRET") {
+        if !key.contains("SECRET") && !key.contains("KEY") && !key.contains("API") {
             return None;
         }
 
@@ -101,6 +104,65 @@ impl Rule for UrlRule {
     }
 }
 
+impl Rule for IdRule {
+    fn check(&self, key: &str, value: &str) -> Option<ValidationError> {
+        if !key.contains("ID") {
+            return None;
+        }
+        if value.is_empty() {
+            return Some(ValidationError::new(
+                key.to_string(),
+                "empty".to_string(),
+                "must not be empty".to_string(),
+            ));
+        }
+
+        None
+    }
+}
+
+impl Rule for HostRule {
+    fn check(&self, key: &str, value: &str) -> Option<ValidationError> {
+        if !key.contains("HOST") {
+            return None;
+        }
+        if value.is_empty() {
+            return Some(ValidationError::new(
+                key.to_string(),
+                "empty".to_string(),
+                "must not be empty".to_string(),
+            ));
+        }
+
+        None
+    }
+}
+
+impl Rule for NodeRule {
+    fn check(&self, key: &str, value: &str) -> Option<ValidationError> {
+        if key != "NODE_ENV" {
+            return None;
+        }
+        if value.is_empty() {
+            return Some(ValidationError::new(
+                key.to_string(),
+                "empty".to_string(),
+                "must not be empty".to_string(),
+            ));
+        }
+
+        if value != "development" && value != "production" && value != "test" {
+            return Some(ValidationError::new(
+                key.to_string(),
+                "format".to_string(),
+                "must be \"development\" or \"production\" or \"test\"".to_string(),
+            ));
+        }
+
+        None
+    }
+}
+
 // outside the loop - created once!!
 const VALID_URL_PREFIXES: &[&str] = &[
     "http://",
@@ -118,8 +180,14 @@ const VALID_URL_PREFIXES: &[&str] = &[
 ];
 
 pub fn validate_env(map: HashMap<String, Option<String>>) -> Vec<ValidationError> {
-    let rules: Vec<Box<dyn Rule>> =
-        vec![Box::new(SecretRule), Box::new(PortRule), Box::new(UrlRule)];
+    let rules: Vec<Box<dyn Rule>> = vec![
+        Box::new(NodeRule),
+        Box::new(SecretRule),
+        Box::new(UrlRule),
+        Box::new(PortRule),
+        Box::new(HostRule),
+        Box::new(IdRule),
+    ];
 
     let mut vec_errors: Vec<ValidationError> = Vec::new();
 
@@ -132,6 +200,7 @@ pub fn validate_env(map: HashMap<String, Option<String>>) -> Vec<ValidationError
         for rule in &rules {
             if let Some(error) = rule.check(key, val_str) {
                 vec_errors.push(error);
+                break;
             }
         }
     }
