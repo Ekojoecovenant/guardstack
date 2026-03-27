@@ -22,7 +22,7 @@ Built with Rust. Fast by default.
 ## 🚀 Installation
 
 ```bash
-npx devguard
+npx @deveko/devguard
 ```
 
 That's it. No installation needed.
@@ -35,15 +35,16 @@ Place a `.env` file in your project root, then run:
 
 ```bash
 # Scan default .env
-npx devguard check
+npx @deveko/devguard check
  
 # Scan a custom path
-npx devguard check --path ./apps/backend/.env
+npx @deveko/devguard check --path ./apps/backend/.env
 ```
 
 ### Example `.env`
 
 ```env
+TEST2
 PORT=abc
 JWT_SECRET=123
 DATABASE_URL=localhost
@@ -55,11 +56,12 @@ NODE_ENV=development
 ```bash
 🔍 DevGuard - scanning .env...
 
+⚠️ 'TEST2' is malformed - missing '='
 ❌ PORT -> must be a number
 ❌ JWT_SECRET -> must be greater than or equal to 32 characters
-❌ DATABASE_URL -> must start with http://, https://, postgres://, mysql://
+❌ DATABASE_URL -> must start with http://, https://, postgres://, postgresql://, mysql://, redis://, rediss://, mongodb://, mongodb+srv://, amqp://, amqps://, sqlite://
 
-⚠️  3 issue(s) found
+⚠️  3 errors(s) and 1 warning(s) found
 ```
 
 When everything looks good:
@@ -93,6 +95,8 @@ No config needed. Just run it.
 - [x] CLI output with colors
 - [x] `npx devguard` via npm
 - [x] `--path` option for custom `.env` paths
+- [x] Malformed line detection
+- [x] Improved error summary
 - [ ] Custom rules via `devguard.config.toml`
 - [ ] CI/CD integration
 - [ ] GitHub Action
