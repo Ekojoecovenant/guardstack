@@ -17,6 +17,7 @@ Built with Rust. Fast by default.
 - ❌ Validates `NODE_ENV` values
 - ⚠️ Warns about empty, malformed, or missing variables
 - ✅ Priority-based rule engine
+- ✅ Auto-generates `.env.example` from `.env`
 - ✅ Clean, readable CLI output
 
 ---
@@ -41,6 +42,9 @@ npx @deveko/devguard check
  
 # Scan a custom path
 npx @deveko/devguard check --path ./apps/backend/.env
+
+# Generate .env.example from .env
+npx @deveko/devguard init
 ```
 
 ### Example `.env`
@@ -117,6 +121,8 @@ No config needed. Just run it.
 - [x] Improved error summary
 - [x] New validation rules
 - [x] Priority system
+- [x] `devguard init` -> auto-generate `.env.example`
+- [ ] Missing required keys detection
 - [ ] Custom rules via `devguard.config.toml`
 - [ ] CI/CD integration
 - [ ] GitHub Action

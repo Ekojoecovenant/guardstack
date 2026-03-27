@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use colored::Colorize;
 
+mod init;
 mod parser;
 mod validator;
 
@@ -21,6 +22,7 @@ enum Commands {
         #[arg(long, help = "Path to .env file")]
         path: Option<String>,
     },
+    Init,
 }
 
 fn main() {
@@ -33,6 +35,7 @@ fn main() {
 
             execute(path);
         }
+        Commands::Init => init::init_env(),
     }
 }
 
