@@ -1,0 +1,94 @@
+name: Release DevGuard
+
+on:
+  push:
+    tags:
+      - 'v*'
+      
+jobs:
+  # Job 1: build all binaries
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            binary: devguard.exe
+            output: devguard-win.exe
+          - os: macos-latest
+            binary: devguard
+            output: devguard-macos
+          - os: ubuntu-latest
+            binary: devguard
+            output: devguard-linux
+
+    steps:
+      # Step 1: checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # Step 2: install Rust
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Step 3: build release binary
+      - name: Build binary
+        run: cargo build --release
+
+      # Step 4: rename binary
+      - name: Rename binary
+        shell: bash
+        run: |
+          cp target/release/${{ matrix.binary }} bin/${{ matrix.output }}
+
+      # Step 5: upload binary as artifact
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.output }}
+          path: bin/${{ matrix.output }}
+
+  # Job 2: Publish to npm
+  publish:
+    name: Publish to npm
+    needs: build # wait for ALL builds to finish
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: download ALL binaries
+      - name: Download all binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: bin/
+
+      # Step 3: move binaries to correct location
+      - name: Move binaries
+        run: |
+          mv bin/devguard-win.exe/devguard-win.exe bin/devguard-win.exe-final
+          mv bin/devguard-macos/devguard-macos bin/devguard-macos-final
+          mv bin/devguard-linux/devguard-linux bin/devguard-linux-final
+          rm -rf bin/devguard-win.exe bin/devguard-macos bin/devguard-linux
+          mv bin/devguard-win.exe-final bin/devguard-win.exe
+          mv bin/devguard-macos-final bin/devguard-macos
+          mv bin/devguard-linux-final bin/devguard-linux
+          chmod +x bin/devguard-macos
+          chmod +x bin/devguard-linux
+
+      # Step 4: setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Step 5: publish to npm
+      - name: Publish to npm
+        run: npm publish --access publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
