@@ -17,12 +17,15 @@ jobs:
           - os: windows-latest
             binary: devguard.exe
             output: devguard-win.exe
+            artifact: devguard-win
           - os: macos-latest
             binary: devguard
             output: devguard-macos
+            artifact: devguard-macos
           - os: ubuntu-latest
             binary: devguard
             output: devguard-linux
+            artifact: devguard-linux
 
     steps:
       # Step 1: checkout code
@@ -47,7 +50,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.output }}
+          name: ${{ matrix.artifact }}
           path: bin/${{ matrix.output }}
 
   # Job 2: Publish to npm
@@ -70,10 +73,10 @@ jobs:
       # Step 3: move binaries to correct location
       - name: Move binaries
         run: |
-          mv bin/devguard-win.exe/devguard-win.exe bin/devguard-win.exe-final
+          mv bin/devguard-win/devguard-win.exe bin/devguard-win.exe-final
           mv bin/devguard-macos/devguard-macos bin/devguard-macos-final
           mv bin/devguard-linux/devguard-linux bin/devguard-linux-final
-          rm -rf bin/devguard-win.exe bin/devguard-macos bin/devguard-linux
+          rm -rf bin/devguard-win bin/devguard-macos bin/devguard-linux
           mv bin/devguard-win.exe-final bin/devguard-win.exe
           mv bin/devguard-macos-final bin/devguard-macos
           mv bin/devguard-linux-final bin/devguard-linux
