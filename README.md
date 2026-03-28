@@ -19,6 +19,8 @@ Built with Rust. Fast by default.
 - ✅ Priority-based rule engine
 - ✅ Auto-generates `.env.example` from `.env`
 - ✅ Clean, readable CLI output
+- 🖥️ Cross platform (Windows, Mac, Linux)
+- 🤖 Auto-builds via GitHub Actions
 
 ---
 
@@ -28,7 +30,7 @@ Built with Rust. Fast by default.
 npx @deveko/devguard
 ```
 
-That's it. No installation needed.
+That's it. Works on Windows, Mac and Linux. No installation needed.
 
 ---
 
@@ -125,9 +127,9 @@ No config needed. Just run it.
 - [x] `devguard init` -> auto-generate `.env.example`
 - [x] Missing required keys detection
 - [x] Sectioned output (Warnings, Errors, Missing)
+- [x] CI/CD integration via GitHub Action
+- [x] Cross platform binaries (Windows, Mac, Linux)
 - [ ] Custom rules via `devguard.config.toml`
-- [ ] CI/CD integration
-- [ ] GitHub Action
 - [ ] VSCode extension
 - [ ] Docker config validation
 - [ ] Secret leak detection in source files
