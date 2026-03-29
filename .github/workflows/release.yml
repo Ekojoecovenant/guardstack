@@ -105,3 +105,24 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Step 8: notify Discord  ← ADD THIS!!
+      - name: Notify Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"🛡️ DevGuard v$VERSION Released!!\",
+              \"description\": \"A new version of DevGuard is live on npm!!\",
+              \"color\": 5763719,
+              \"fields\": [
+                {\"name\": \"Install\", \"value\": \"\`\`\`npx @deveko/devguard check\`\`\`\"},
+                {\"name\": \"npm\", \"value\": \"npmjs.com/package/@deveko/devguard\"},
+                {\"name\": \"GitHub\", \"value\": \"github.com/Ekojoecovenant/devguard\"}
+              ]
+            }]
+          }" \
+          $DISCORD_WEBHOOK

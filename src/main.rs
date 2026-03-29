@@ -49,7 +49,7 @@ fn execute(path: String, config_path: String) {
     println!("\n🔍 DevGuard - scanning .env...");
 
     // load config
-    let config = config::load_config((&config_path));
+    let config = config::load_config(&config_path);
 
     match parser::parser_env(&path) {
         Ok((lines_map, warnings)) => {
