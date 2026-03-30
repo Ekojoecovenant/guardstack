@@ -1,5 +1,6 @@
 pub struct DevGuardError {
     pub key: String,
+    #[allow(dead_code)]
     pub rule: String,
     pub message: String,
 }

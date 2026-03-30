@@ -23,6 +23,9 @@ Built with Rust. Fast by default.
 - 🤖 Auto-builds via GitHub Actions
 - ⚙️ Custom rules via `devguard.config.toml`
 - 🔄 Custom rules override built-in rules
+- 🔐 Scans source files for hardcoded secrets
+- 🔍 Detects real secret patterns (Stripe, GitHub, AWS, Slack)
+- 💬 Differentiates code leaks from comment leaks
 
 ---
 
@@ -52,6 +55,12 @@ npx @deveko/devguard init
 
 # Use custom config path
 npx @deveko/devguard check --config ./custom/devguard.config.toml
+
+# Scan current directory for secret leask
+npx @deveko/devguard scan
+
+# Scan custom path
+npx @deveko/devguard scan --path ./src
 ```
 
 ### Example `devguard.config.toml`
@@ -159,6 +168,7 @@ Custom rules override built-in rules with matching patterns!!
 - [x] CI/CD integration via GitHub Action
 - [x] Cross platform binaries (Windows, Mac, Linux)
 - [x] Custom rules via `devguard.config.toml`
+- [x] Secret leak detection in source files
 - [ ] VSCode extension
 - [ ] Docker config validation
 - [ ] Secret leak detection in source files

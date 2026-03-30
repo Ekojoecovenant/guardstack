@@ -1,11 +1,14 @@
 use clap::{Parser, Subcommand};
 use colored::Colorize;
 
+use crate::scanner::scan_files;
+
 mod config;
 mod error;
 mod init;
 mod missing;
 mod parser;
+mod scanner;
 mod validator;
 
 // this struct represents the entire CLI program
@@ -28,6 +31,10 @@ enum Commands {
         config: Option<String>,
     },
     Init,
+    Scan {
+        #[arg(long, help = "Path to scan")]
+        path: Option<String>,
+    },
 }
 
 fn main() {
@@ -42,6 +49,27 @@ fn main() {
             execute(path, config);
         }
         Commands::Init => init::init_env(),
+        Commands::Scan { path } => {
+            println!("\n🔍 DevGuard - scanning for secret leaks...\n");
+
+            let results = scan_files(path.as_deref());
+
+            if results.is_empty() {
+                println!("✅ All checks passed! Your .env looks good!");
+            } else {
+                println!("{}", "=== Secret Leaks Detected ===".red().bold());
+                for result in &results {
+                    println!(
+                        "❌ {} line {} -> {}",
+                        result.file.yellow(),
+                        result.line_number.to_string().cyan(),
+                        result.reason.red()
+                    );
+                    println!("   {}", result.line.dimmed());
+                }
+                println!("\n⚠️    {} potential secret leak(s) found!!", results.len());
+            }
+        }
     }
 }
 
