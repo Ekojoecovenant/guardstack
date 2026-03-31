@@ -1,12 +1,12 @@
-pub struct DevGuardError {
+pub struct GuardStackError {
     pub key: String,
     #[allow(dead_code)]
     pub rule: String,
     pub message: String,
 }
 
-impl DevGuardError {
+impl GuardStackError {
     pub fn new(key: String, rule: String, message: String) -> Self {
-        DevGuardError { key, rule, message }
+        GuardStackError { key, rule, message }
     }
 }

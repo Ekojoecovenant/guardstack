@@ -5,13 +5,13 @@ use std::{
     path::Path,
 };
 
-use crate::error::DevGuardError;
+use crate::error::GuardStackError;
 
 pub fn check_missing_keys(
     map: &HashMap<String, Option<String>>,
     example_path: &str,
-) -> Vec<DevGuardError> {
-    let mut vec_errors: Vec<DevGuardError> = Vec::new();
+) -> Vec<GuardStackError> {
+    let mut vec_errors: Vec<GuardStackError> = Vec::new();
     if !Path::new(example_path).exists() {
         return vec![];
     }
@@ -30,7 +30,7 @@ pub fn check_missing_keys(
 
         if let Some((key, _)) = line.trim().split_once("=") {
             if !map.contains_key(key) {
-                vec_errors.push(DevGuardError::new(
+                vec_errors.push(GuardStackError::new(
                     key.to_string(),
                     "missing".to_string(),
                     "missing required variable".to_string(),

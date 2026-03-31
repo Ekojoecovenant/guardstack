@@ -1,8 +1,8 @@
-# 🛡️ DevGuard
+# 🛡️ GuardStack
 
 > Catch broken configs before they break your app.
 
-DevGuard is a fast, zero-config `.env` scanner for Node.js projects. It validates your environment variables and warns you about weak secrets, invalid ports, malformed URLs, and empty values — before you ship.
+GuardStack is a fast, zero-config project security scanner for Node.js projects. It validates your environment variable, detects hardcoded secrets, and catches misconfigurations - before you ship.
 
 Built with Rust. Fast by default.
 
@@ -21,7 +21,7 @@ Built with Rust. Fast by default.
 - ✅ Clean, readable CLI output
 - 🖥️ Cross platform (Windows, Mac, Linux)
 - 🤖 Auto-builds via GitHub Actions
-- ⚙️ Custom rules via `devguard.config.toml`
+- ⚙️ Custom rules via `guardstack.config.toml`
 - 🔄 Custom rules override built-in rules
 - 🔐 Scans source files for hardcoded secrets
 - 🔍 Detects real secret patterns (Stripe, GitHub, AWS, Slack)
@@ -32,7 +32,7 @@ Built with Rust. Fast by default.
 ## 🚀 Installation
 
 ```bash
-npx @deveko/devguard
+npx guardstack
 ```
 
 That's it. Works on Windows, Mac and Linux. No installation needed.
@@ -45,25 +45,25 @@ Place a `.env` file in your project root, then run:
 
 ```bash
 # Scan default .env
-npx @deveko/devguard check
+npx guardstack check
  
 # Scan a custom path
-npx @deveko/devguard check --path ./apps/backend/.env
+npx guardstack check --path ./apps/backend/.env
 
 # Generate .env.example from .env
-npx @deveko/devguard init
+npx guardstack init
 
 # Use custom config path
-npx @deveko/devguard check --config ./custom/devguard.config.toml
+npx guardstack check --config ./custom/guardstack.config.toml
 
-# Scan current directory for secret leask
-npx @deveko/devguard scan
+# Scan current directory for secret leaks
+npx guardstack scan
 
 # Scan custom path
-npx @deveko/devguard scan --path ./src
+npx guardstack scan --path ./src
 ```
 
-### Example `devguard.config.toml`
+### Example `guardstack.config.toml`
 
 ```toml
 [[rules]]
@@ -91,7 +91,7 @@ DATABASE_URL=localhost
 ### Example output
 
 ```bash
-🔍 DevGuard - scanning .env...
+🔍 GuardStack - scanning .env...
 
 === Warning(s) ===
 ⚠️  'TEST2' is malformed - missing '='
@@ -110,7 +110,7 @@ DATABASE_URL=localhost
 When everything looks good:
 
 ```bash
-🔍 DevGuard - scanning .env...
+🔍 GuardStack - scanning .env...
 
 ✅ All checks passed! Your .env looks good!
 ```
@@ -119,7 +119,7 @@ When everything looks good:
 
 ## 🧠 How It Works
 
-DevGuard runs three checks on your project:
+GuardStack runs three checks on your project:
 
 **1. Parse Check**
 Scans `.env` line by line for malformed entries
@@ -140,7 +140,7 @@ Runs pattern-based rules with priority ordering:
 Compares `.env` against `.env.example` - any key in `.env.example` missing from  `.env` is flagged!!
 
 **4. Custom Rules(optional)**
-Create `devguard.config.toml` in your project root:
+Create `guardstack.config.toml` in your project root:
 
 | Rule type | Description |
 | --------- | ----------- |
@@ -156,30 +156,29 @@ Custom rules override built-in rules with matching patterns!!
 - [x] `.env` parser
 - [x] Pattern-based validation engine
 - [x] CLI output with colors
-- [x] `npx devguard` via npm
+- [x] `npx guardstack` via npm
 - [x] `--path` option for custom `.env` paths
 - [x] Malformed line detection
 - [x] Improved error summary
 - [x] New validation rules
 - [x] Priority system
-- [x] `devguard init` -> auto-generate `.env.example`
+- [x] `guardstack init` -> auto-generate `.env.example`
 - [x] Missing required keys detection
 - [x] Sectioned output (Warnings, Errors, Missing)
 - [x] CI/CD integration via GitHub Action
 - [x] Cross platform binaries (Windows, Mac, Linux)
-- [x] Custom rules via `devguard.config.toml`
+- [x] Custom rules via `guardstack.config.toml`
 - [x] Secret leak detection in source files
 - [ ] VSCode extension
 - [ ] Docker config validation
-- [ ] Secret leak detection in source files
 
 ---
 
 ## 🔧 Local Development
 
 ```bash
-git clone https://github.com/ekojoecovenant/devguard.git
-cd devguard
+git clone https://github.com/ekojoecovenant/guardstack.git
+cd guardstack
 cargo build --release
 node cli.js check
 ```

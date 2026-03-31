@@ -13,8 +13,8 @@ mod validator;
 
 // this struct represents the entire CLI program
 #[derive(Parser)]
-#[command(name = "devguard")]
-#[command(about = "A fast .env scanner for Node.js projects")]
+#[command(name = "guardstack")]
+#[command(about = "A fast project security scanner for Node.js projects")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -44,13 +44,13 @@ fn main() {
     match cli.command {
         Commands::Check { path, config } => {
             let path = path.unwrap_or(".env".to_string());
-            let config = config.unwrap_or("devguard.config.toml".to_string());
+            let config = config.unwrap_or("guardstack.config.toml".to_string());
 
             execute(path, config);
         }
         Commands::Init => init::init_env(),
         Commands::Scan { path } => {
-            println!("\n🔍 DevGuard - scanning for secret leaks...\n");
+            println!("\n🔍 GuardStack - scanning for secret leaks...\n");
 
             let results = scan_files(path.as_deref());
 
@@ -74,7 +74,7 @@ fn main() {
 }
 
 fn execute(path: String, config_path: String) {
-    println!("\n🔍 DevGuard - scanning .env...");
+    println!("\n🔍 GuardStack - scanning .env...");
 
     // load config
     let config = config::load_config(&config_path);

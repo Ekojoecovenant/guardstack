@@ -1,4 +1,4 @@
-name: Release DevGuard
+name: Release GuardStack
 
 on:
   push:
@@ -15,17 +15,17 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            binary: devguard.exe
-            output: devguard-win.exe
-            artifact: devguard-win
+            binary: guardstack.exe
+            output: guardstack-win.exe
+            artifact: guardstack-win
           - os: macos-latest
-            binary: devguard
-            output: devguard-macos
-            artifact: devguard-macos
+            binary: guardstack
+            output: guardstack-macos
+            artifact: guardstack-macos
           - os: ubuntu-latest
-            binary: devguard
-            output: devguard-linux
-            artifact: devguard-linux
+            binary: guardstack
+            output: guardstack-linux
+            artifact: guardstack-linux
 
     steps:
       # Step 1: checkout code
@@ -73,15 +73,15 @@ jobs:
       # Step 3: move binaries to correct location
       - name: Move binaries
         run: |
-          mv bin/devguard-win/devguard-win.exe bin/devguard-win.exe-final
-          mv bin/devguard-macos/devguard-macos bin/devguard-macos-final
-          mv bin/devguard-linux/devguard-linux bin/devguard-linux-final
-          rm -rf bin/devguard-win bin/devguard-macos bin/devguard-linux
-          mv bin/devguard-win.exe-final bin/devguard-win.exe
-          mv bin/devguard-macos-final bin/devguard-macos
-          mv bin/devguard-linux-final bin/devguard-linux
-          chmod +x bin/devguard-macos
-          chmod +x bin/devguard-linux
+          mv bin/guardstack-win/guardstack-win.exe bin/guardstack-win.exe-final
+          mv bin/guardstack-macos/guardstack-macos bin/guardstack-macos-final
+          mv bin/guardstack-linux/guardstack-linux bin/guardstack-linux-final
+          rm -rf bin/guardstack-win bin/guardstack-macos bin/guardstack-linux
+          mv bin/guardstack-win.exe-final bin/guardstack-win.exe
+          mv bin/guardstack-macos-final bin/guardstack-macos
+          mv bin/guardstack-linux-final bin/guardstack-linux
+          chmod +x bin/guardstack-macos
+          chmod +x bin/guardstack-linux
 
       # Step 4: setup Node.js
       - name: Setup Node.js
@@ -115,13 +115,13 @@ jobs:
           curl -H "Content-Type: application/json" \
           -d "{
             \"embeds\": [{
-              \"title\": \"🛡️ DevGuard v$VERSION Released!!\",
-              \"description\": \"A new version of DevGuard is live on npm!!\",
+              \"title\": \"🛡️ GuardStack v$VERSION Released!!\",
+              \"description\": \"A new version of GuardStack is live on npm!!\",
               \"color\": 5763719,
               \"fields\": [
-                {\"name\": \"Install\", \"value\": \"\`\`\`npx @deveko/devguard check\`\`\`\"},
-                {\"name\": \"npm\", \"value\": \"npmjs.com/package/@deveko/devguard\"},
-                {\"name\": \"GitHub\", \"value\": \"github.com/Ekojoecovenant/devguard\"}
+                {\"name\": \"Install\", \"value\": \"\`\`\`npx guardstack check\`\`\`\"},
+                {\"name\": \"npm\", \"value\": \"npmjs.com/package/guardstack\"},
+                {\"name\": \"GitHub\", \"value\": \"github.com/Ekojoecovenant/guardstack\"}
               ]
             }]
           }" \

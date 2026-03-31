@@ -3,7 +3,7 @@ use std::path::Path;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-pub struct DevGuardConfig {
+pub struct GuardStackConfig {
     pub rules: Option<Vec<CustomRule>>,
 }
 
@@ -15,7 +15,7 @@ pub struct CustomRule {
     pub message: String,
 }
 
-pub fn load_config(path: &str) -> Option<DevGuardConfig> {
+pub fn load_config(path: &str) -> Option<GuardStackConfig> {
     if !Path::new(path).exists() {
         return None;
     }

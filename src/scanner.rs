@@ -36,7 +36,7 @@ const EXCLUDED_FILES: &[&str] = &[
     "readme.md",
     ".env",
     ".env.example",
-    "devguard.config.toml",
+    "guardstack.config.toml",
     "package.json",
     "package-lock.json",
     "Cargo.toml",

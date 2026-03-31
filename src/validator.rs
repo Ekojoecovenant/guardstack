@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-use crate::{config::DevGuardConfig, error::DevGuardError};
+use crate::{config::GuardStackConfig, error::GuardStackError};
 
 // RULE TRAIT
 pub trait Rule {
     fn pattern(&self) -> &str;
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError>;
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError>;
 }
 
 pub struct SecretRule;
@@ -27,13 +27,13 @@ impl Rule for SecretRule {
         "SECRET"
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if !key.contains("SECRET") && !key.contains("KEY") && !key.contains("API") {
             return None;
         }
 
         if value.is_empty() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "empty".to_string(),
                 "must not be empty".to_string(),
@@ -41,7 +41,7 @@ impl Rule for SecretRule {
         }
 
         if value.chars().count() < 32 {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "min_length".to_string(),
                 "must be greater than or equal to 32".to_string(),
@@ -57,19 +57,19 @@ impl Rule for PortRule {
         "PORT"
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if !key.contains("PORT") {
             return None;
         }
         if value.is_empty() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "empty".to_string(),
                 "must not be empty".to_string(),
             ));
         }
         if !value.parse::<u16>().is_ok() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "format".to_string(),
                 "must be a number".to_string(),
@@ -85,12 +85,12 @@ impl Rule for UrlRule {
         "URL"
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if !key.contains("URL") {
             return None;
         }
         if value.is_empty() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "empty".to_string(),
                 "must not be empty".to_string(),
@@ -100,7 +100,7 @@ impl Rule for UrlRule {
             .iter()
             .any(|prefix| value.starts_with(prefix))
         {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "format".to_string(),
                 String::from(
@@ -118,12 +118,12 @@ impl Rule for IdRule {
         "ID"
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if !key.contains("ID") {
             return None;
         }
         if value.is_empty() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "empty".to_string(),
                 "must not be empty".to_string(),
@@ -139,12 +139,12 @@ impl Rule for HostRule {
         "HOST"
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if !key.contains("HOST") {
             return None;
         }
         if value.is_empty() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "empty".to_string(),
                 "must not be empty".to_string(),
@@ -160,12 +160,12 @@ impl Rule for NodeRule {
         "NODE_ENV"
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if key != "NODE_ENV" {
             return None;
         }
         if value.is_empty() {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "empty".to_string(),
                 "must not be empty".to_string(),
@@ -173,7 +173,7 @@ impl Rule for NodeRule {
         }
 
         if value != "development" && value != "production" && value != "test" {
-            return Some(DevGuardError::new(
+            return Some(GuardStackError::new(
                 key.to_string(),
                 "format".to_string(),
                 "must be \"development\" or \"production\" or \"test\"".to_string(),
@@ -189,7 +189,7 @@ impl Rule for DynamicRule {
         &self.pattern
     }
 
-    fn check(&self, key: &str, value: &str) -> Option<DevGuardError> {
+    fn check(&self, key: &str, value: &str) -> Option<GuardStackError> {
         if !key.contains(&self.pattern) {
             return None;
         }
@@ -198,7 +198,7 @@ impl Rule for DynamicRule {
             "min_length" => {
                 let min: usize = self.value.parse().unwrap_or(32);
                 if value.len() < min {
-                    return Some(DevGuardError::new(
+                    return Some(GuardStackError::new(
                         key.to_string(),
                         "min_length".to_string(),
                         self.message.clone(),
@@ -208,7 +208,7 @@ impl Rule for DynamicRule {
             "one_of" => {
                 let options: Vec<&str> = self.value.split(",").collect();
                 if !options.contains(&value) {
-                    return Some(DevGuardError::new(
+                    return Some(GuardStackError::new(
                         key.to_string(),
                         "one_of".to_string(),
                         self.message.clone(),
@@ -239,8 +239,8 @@ const VALID_URL_PREFIXES: &[&str] = &[
 
 pub fn validate_env(
     map: &HashMap<String, Option<String>>,
-    config: &Option<DevGuardConfig>,
-) -> Vec<DevGuardError> {
+    config: &Option<GuardStackConfig>,
+) -> Vec<GuardStackError> {
     let mut rules: Vec<Box<dyn Rule>> = vec![
         Box::new(NodeRule),
         Box::new(SecretRule),
@@ -271,7 +271,7 @@ pub fn validate_env(
         }
     }
 
-    let mut vec_errors: Vec<DevGuardError> = Vec::new();
+    let mut vec_errors: Vec<GuardStackError> = Vec::new();
 
     for (key, value) in map {
         let val_str = match value {
